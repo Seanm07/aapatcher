@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -27,11 +27,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="native\tbb.dll" TargetPath="tbb.dll" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="native\xlpack.dll" TargetPath="xlpack.dll" CopyToOutputDirectory="PreserveNewest" />
+    <Compile Remove="Program.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.24059.2" />
+    <None Include="native\tbb.dll" TargetPath="tbb.dll" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="native\xlpack.dll" TargetPath="xlpack.dll" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
