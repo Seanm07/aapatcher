@@ -51,4 +51,32 @@ public class FileUtil {
 
         return true;
     }
+
+    public static bool ChangeFileExtensions(string directory, string fromExt, string toExt) {
+        try {
+            string[] files = Directory.GetFiles(directory, "*." + fromExt, SearchOption.AllDirectories);
+
+            foreach (string file in files)
+                File.Move(file, Path.ChangeExtension(file, "." + toExt));
+        } catch (IOException) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static bool DeleteDirectory(string filePath) {
+        try {
+            if (Directory.Exists(filePath))
+                Directory.Delete(filePath, true);
+        } catch (IOException) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static string TempFilePath() {
+        return Path.GetTempPath() + "archeage_addon_manager/";
+    }
 }
