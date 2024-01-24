@@ -1,4 +1,5 @@
 using System.IO;
+using System.IO.Compression;
 
 public class FileUtil {
     // https://stackoverflow.com/a/937558
@@ -78,5 +79,26 @@ public class FileUtil {
 
     public static string TempFilePath() {
         return Path.GetTempPath() + "archeage_addon_manager/";
+    }
+
+    public static bool CreateZipFile(string[] filesToZip, string zipFilePath) {
+        try {
+            ZipArchive newZipFile = ZipFile.Open(zipFilePath, ZipArchiveMode.Create);
+
+            foreach (string fileToZip in filesToZip) {
+                if (File.Exists(fileToZip)) {
+                    newZipFile.CreateEntryFromFile(fileToZip, Path.GetFileName(fileToZip));
+                } else {
+                    throw new IOException("Failed to create zip, file " + fileToZip + " does not exist!");
+                }
+            }
+            
+            // Dispose of the zip file or it'll be locked in use by the program
+            newZipFile.Dispose();
+        } catch (IOException) {
+            return false;
+        }
+
+        return true;
     }
 }
