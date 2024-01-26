@@ -1,5 +1,13 @@
 using System.IO;
 using System.IO.Compression;
+using System.Security.Cryptography;
+
+public class AddonFileInfo {
+    public string filename { get; set; }
+    public string filepath { get; set; }
+    public long filesize { get; set; }
+    public string checksum { get; set; }
+}
 
 public class FileUtil {
     // https://stackoverflow.com/a/937558
@@ -100,5 +108,43 @@ public class FileUtil {
         }
 
         return true;
+    }
+
+    public static bool ExtractZipFile(string zipFilePath, string extractPath) {
+        try {
+            ZipFile.ExtractToDirectory(zipFilePath, extractPath);
+        } catch (IOException) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static AddonFileInfo GetFileInfo(string filePath, string basePath) {
+        return new AddonFileInfo {
+            filename = Path.GetFileName(filePath),
+            filepath = RelativeFormatPath(filePath, basePath),
+            filesize = GetFileSize(filePath),
+            checksum = CalculateChecksum(filePath)
+        };
+    }
+
+    public static string CalculateChecksum(string filePath) {
+        using (var md5 = MD5.Create()) {
+            using (var stream = File.OpenRead(filePath)) {
+                byte[] hash = md5.ComputeHash(stream);
+                return BitConverter.ToString(hash).Replace("-", "").ToLower();
+            }
+        }
+    }
+
+    public static long GetFileSize(string filePath) {
+        using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read)) {
+            return stream.Length;
+        }
+    }
+
+    public static string RelativeFormatPath(string path, string basePath) {
+        return path.Replace(basePath, "").Replace("\\", "/");
     }
 }
